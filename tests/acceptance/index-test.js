@@ -4,20 +4,20 @@ import startApp from '../helpers/start-app';
 import stopApp from '../helpers/stop-app';
 import { validResponse } from '../helpers';
 
-var application, server;
+var application;
 
 module('Acceptance: Index', {
   beforeEach: function() {
     application = startApp();
-    server = application.server;
+    //server = application.server;
 
-    server.get('/api/categories', function( req ) {
-      return validResponse({categories: categories()});
-    });
-
-    server.get('/api/addons', function( req ) {
-      return validResponse({addons: addons(), maintainers: maintainers()});
-    });
+    //server.get('/api/categories', function( req ) {
+    //  return validResponse({categories: categories()});
+    //});
+    //
+    //server.get('/api/addons', function( req ) {
+    //  return validResponse({addons: addons(), maintainers: maintainers()});
+    //});
   },
 
   afterEach: function() {
@@ -26,9 +26,13 @@ module('Acceptance: Index', {
 });
 
 test('visiting /', function( assert ) {
+  var categories = server.createList('category', 7);
+  var addons = server.createList('addon', 4);
+  var category = server.create('category', {name: 'Authentication'});
 
   visit('/');
 
+  return pauseTest();
   andThen(function() {
     assert.inDOM('.test-category', 8, 'All categories should display');
     assert.contains('.test-category', 'Authentication (4)', 'Categories should list title and count of addons');
@@ -80,7 +84,8 @@ function categories() {
       "name": "Components",
       "description": "Addons that provide a component",
       "addon_ids": [1, 11]
-    }, {
+    },
+    {
       "id": 3,
       "name": "Styles",
       "description": "Addons that provide styles, css frameworks, preprocessors",
@@ -97,23 +102,60 @@ function categories() {
       "name": "Build tools",
       "description": "Addons related to preprocessing, broccoli plugins and dependencies of ember-cli",
       "addon_ids": [3]
-    }, {
+    },
+    {
       "id": 6,
       "name": "Data",
       "description": "Addons related to ember-data or alternatives to ember-data",
       "addon_ids": [4]
-    }, {
+    },
+    {
       "id": 7,
       "name": "Library wrappers",
       "description": "Addons that wrap third party libraries, jQuery plugins and the like",
       "addon_ids": [9]
-    }, {
+    },
+    {
       "id": 8,
       "name": "Miscellaneous",
       "description": "The addons that don't fit into other categories",
       "addon_ids": []
     }];
 }
+
+
+var defaultAddon = function(options){
+  return Ember.$.extend({}, {
+    id:  guid(),
+    name: "ember-feature-flags",
+    rendered_note: "<h1>Test</h1>",
+    repository_url: "https://github.com/kategengler/ember-feature-flags",
+    latest_version_date: "2014-12-21T23:17:50.212Z",
+    description: "An addon that provides feature flags",
+    license: "MIT",
+    is_deprecated: false,
+    note: "#Test",
+    is_official: false,
+    is_cli_dependency: false,
+    is_hidden: false,
+    is_new_addon: false,
+    has_invalid_github_repo: false,
+    open_issues: 0,
+    forks: 0,
+    contributors: [
+      {name: "kategengler", avatar_url: "https://avatars.githubusercontent.com/u/12345?v=3"}
+    ],
+    first_commit_date: "2014-12-21T21:37:23.000Z",
+    latest_commit_date: "2014-12-21T23:12:54.000Z",
+    last_month_downloads: 1,
+    is_top_downloaded: false,
+    is_top_starred: false,
+    score: 2,
+    stars: 1,
+    committed_to_recently: true,
+    maintainer_ids: [1]
+  }, options);
+};
 
 function addons() {
   return [{
@@ -278,3 +320,10 @@ function maintainers() {
           }];
 }
 
+
+function guid() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace( /[xy]/g, function ( c ) {
+    var r = Math.random() * 16 | 0, v = c === 'x' ? r : ( r & 0x3 | 0x8 );
+    return v.toString( 16 );
+  });
+}
