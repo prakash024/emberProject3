@@ -28,7 +28,7 @@ module('Acceptance: Index', {
 test('visiting /', function( assert ) {
   var categories = server.createList('category', 7);
   var addons = server.createList('addon', 4);
-  var category = server.create('category', {name: 'Authentication'});
+  var category = server.create('category', {name: 'Authentication', addon_ids: [1,2,3,4]});
 
   visit('/');
 
