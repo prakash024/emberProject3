@@ -27,8 +27,8 @@ cache:
 test_script:
   # Output useful info for debugging.
   - npm version
-  - cmd: node_modules/.bin/ember try:each
   - cmd: node_modules/.bin/ember try:one ember-beta --- "echo 5 && echo 3"
+  - cmd: node_modules/.bin/ember try:each
 
 # Don't actually build.
 build: off
